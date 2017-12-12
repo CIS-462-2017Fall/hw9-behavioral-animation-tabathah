@@ -84,6 +84,19 @@ void BehaviorViewer::initializeGui()
 	TwAddButton(m_TwBehaviorBar, "Reset", onResetCb, this, "");
 
 	//TODO: Add your code here to create additional GUI Variables
+	TwAddVarRW(m_TwBehaviorBar, "Mass", TW_TYPE_DOUBLE, &BehaviorController::gMass, "");
+	TwAddVarRW(m_TwBehaviorBar, "Inertia", TW_TYPE_DOUBLE, &BehaviorController::gInertia, "");
+	TwAddVarRW(m_TwBehaviorBar, "Max Force", TW_TYPE_DOUBLE, &BehaviorController::gMaxForce, "");
+	TwAddVarRW(m_TwBehaviorBar, "Max Torque", TW_TYPE_DOUBLE, &BehaviorController::gMaxTorque, "");
+	TwAddVarRW(m_TwBehaviorBar, "K Arrival", TW_TYPE_DOUBLE, &BehaviorController::KArrival, "");
+	TwAddVarRW(m_TwBehaviorBar, "K Departure", TW_TYPE_DOUBLE, &BehaviorController::KDeparture, "");
+	TwAddVarRW(m_TwBehaviorBar, "K Noise", TW_TYPE_DOUBLE, &BehaviorController::KNoise, "");
+	TwAddVarRW(m_TwBehaviorBar, "K Wander", TW_TYPE_DOUBLE, &BehaviorController::KWander, "");
+	TwAddVarRW(m_TwBehaviorBar, "K Avoid", TW_TYPE_DOUBLE, &BehaviorController::KAvoid, "");
+	TwAddVarRW(m_TwBehaviorBar, "T Avoid", TW_TYPE_DOUBLE, &BehaviorController::TAvoid, "");
+	TwAddVarRW(m_TwBehaviorBar, "K Separation", TW_TYPE_DOUBLE, &BehaviorController::KSeparation, "");
+	TwAddVarRW(m_TwBehaviorBar, "K Alignment", TW_TYPE_DOUBLE, &BehaviorController::KAlignment, "");
+	TwAddVarRW(m_TwBehaviorBar, "K Cohesion", TW_TYPE_DOUBLE, &BehaviorController::KCohesion, "");
 }
 
 

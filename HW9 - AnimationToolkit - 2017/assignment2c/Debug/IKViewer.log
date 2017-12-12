@@ -1,1 +1,3 @@
-﻿
+﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (A2c-IKViewer-soln.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  IKViewer.vcxproj -> C:\Users\TDH\Desktop\CIS 562\Hw9 Behavioral Animation\HW9 - AnimationToolkit - 2017\assignment2c\Debug\A2c-IKViewerd.exe
+          1 file(s) copied.

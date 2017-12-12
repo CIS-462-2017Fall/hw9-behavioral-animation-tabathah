@@ -161,24 +161,34 @@ void BehaviorController::control(double deltaT)
 		//  where the values of the gains Kv and Kp are different for each controller
 
 		// TODO: insert your code here to compute m_force and m_torque
+		float Kv = 32;
+		float Kp = 256;
+		float m_vd = m_Vdesired.Length();
+		float Vbz = m_VelB[2];
+		float thetad = atan2(m_Vdesired[2], m_Vdesired[0]);
+		float thetaDot = m_AVelB[1];
+		float theta = m_Euler[1];
+		double x = thetad - theta; ClampAngle(x);
 
+		m_force = gMass * this->gVelKv * (m_Vdesired - m_state[VEL]);
+		m_torque = gInertia * (- Kv * thetaDot + Kp * x);
 
-
-
-
-
-
-
-
-
-
-
+		if (m_force.Length() > gMaxForce)
+		{
+			m_force = m_force.Normalize() * gMaxForce;
+		}
+		if (m_torque.Length() > gMaxForce)
+		{
+			m_torque = m_torque.Normalize() * gMaxForce;
+		}
 
 		// when agent desired agent velocity and actual velocity < 2.0 then stop moving
 		if (m_vd < 2.0 &&  m_state[VEL][_Z] < 2.0)
 		{
 			m_force[2] = 0.0;
 			m_torque[1] = 0.0;
+			//m_state[VEL][2] = 0.0;
+			//m_state[AVEL][1] = 0.0;
 		}
 	}
 	else
@@ -212,10 +222,15 @@ void BehaviorController::computeDynamics(vector<vec3>& state, vector<vec3>& cont
 	// Compute the stateDot vector given the values of the current state vector and control input vector
 	// TODO: add your code here
 
+	stateDot[POS][0] = state[VEL][2] * cos(state[ORI][1]); //posx = velz * cos(thetay)
+	stateDot[POS][1] = 0;
+	stateDot[POS][2] = state[VEL][2] * sin(state[ORI][1]); //posz = velz * sin(thetay)
 
+	stateDot[ORI] = state[AVEL]; //theta = avel
 
+	stateDot[VEL] = force / gMass; //vel = acceleration = force / mass
 
-
+	stateDot[AVEL] = torque / gInertia; //avel = angular acceleration = torque / intertia
 }
 
 void BehaviorController::updateState(float deltaT, int integratorType)
@@ -224,29 +239,41 @@ void BehaviorController::updateState(float deltaT, int integratorType)
 	//  this should be similar to what you implemented in the particle system assignment
 
 	// TODO: add your code here
-	
-
-
-
-
-
+	if(integratorType == 0)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			m_state[i] = m_state[i] + deltaT * m_stateDot[i];
+		}
+	}
+	else if (integratorType == 1)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			vec3 d1 = deltaT * m_stateDot[i];
+			vec3 d2 = m_state[i] + deltaT * m_stateDot[i];
+			m_state[i] = m_state[i] + (d1 + d2) / 2.0;
+		}
+	}
 
 
 	//  given the new values in m_state, these are the new component state values 
 	m_Pos0 = m_state[POS];
 	m_Euler = m_state[ORI];
 	m_VelB = m_state[VEL];
+	m_Vel0 = m_state[VEL];
 	m_AVelB = m_state[AVEL];
 
 	//  Perform validation check to make sure all values are within MAX values
 	// TODO: add your code here
-
-
-
-
-
-
-
+	if (m_VelB.Length() > gMaxSpeed)
+	{
+		m_VelB = m_VelB.Normalize() * gMaxSpeed;
+	}
+	if (m_AVelB.Length() > gMaxAngularSpeed)
+	{
+		m_AVelB = m_AVelB.Normalize() * gMaxAngularSpeed;
+	}
 
 	// update the guide orientation
 	// compute direction from nonzero velocity vector
